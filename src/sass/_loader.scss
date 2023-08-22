@@ -1,8 +1,10 @@
 .loader {
+  display: block;
+  margin: auto;
   height: 30px;
   width: 10px;
   border-radius: 4px;
-  color: #fff;
+  color: rgb(44, 44, 146);
   background: currentColor;
   position: relative;
   animation: ht 1s ease-in infinite alternate;

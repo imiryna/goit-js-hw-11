@@ -5,6 +5,7 @@
   padding-top: 10px;
   padding-bottom: 10px;
   background-color: rgb(44, 44, 146);
+  margin-bottom: 50px;
 }
 .search-form {
   display: flex;
@@ -42,6 +43,11 @@ input:focus {
   border: 1px solid #bdbdbd;
   border-radius: 0.15rem;
 }
+.btn:hover,
+.btn:focus {
+  opacity: 1;
+  box-shadow: 0 0 3px 0 #3e3f40;
+}
 .icon {
   display: inline-block;
   width: 1em;
@@ -49,4 +55,21 @@ input:focus {
   stroke-width: 0;
   stroke: currentColor;
   margin: auto;
+}
+.is-hidden {
+  display: none;
+}
+.section-gallery {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.gallery {
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+.photo-card {
+  flex-basis: calc((100% - 15px * 3) / 4);
 }
