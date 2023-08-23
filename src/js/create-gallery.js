@@ -1,10 +1,10 @@
 export { createGallery };
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import { alertImgSuccess } from './data';
 
 const divGallery = document.querySelector('.gallery');
 
-// gallery.on('show.simplelightbox',
 function createGallery(data) {
   const imgs = data
     .map(photo => {
@@ -15,16 +15,16 @@ function createGallery(data) {
   </a>
   <div class="info">
     <p class="info-item">
-      <b>Likes: ${photo.likes}</b>
+      <b>Likes</b> ${photo.likes}
     </p>
     <p class="info-item">
-      <b>Views: ${photo.views}</b>
+      <b>Views</b> ${photo.views}
     </p>
     <p class="info-item">
-      <b>Comments: ${photo.comments}</b>
+      <b>Comments</b> ${photo.comments}
     </p>
     <p class="info-item">
-      <b>Downloads: ${photo.downloads}</b>
+      <b>Downloads</b> ${photo.downloads}
     </p>
   </div>
 </div>
@@ -35,5 +35,9 @@ function createGallery(data) {
 
   let gallery = new SimpleLightbox('.gallery a', {
     captionPosition: 'bottom',
-  });
+    captions: true,
+    captionsData: 'alt',
+    captionDelay: 250,
+  }).refresh();
+  // allertImgSuccess();
 }

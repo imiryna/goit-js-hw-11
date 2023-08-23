@@ -1,42 +1,59 @@
 import { fetchPics } from './js/data';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { alertError, alertImgSuccess } from './js/utils';
+import {
+  refs,
+  hiddenLoader,
+  showLoader,
+  hiddenLoadBtn,
+  showLoadBtn,
+} from './js/refs';
 import { createGallery } from './js/create-gallery';
-import './index.css';
-
-const refs = {
-  form: document.getElementById('search-form'),
-  btn: document.querySelector('btn'),
-  loader: document.querySelector('.loader'),
-  loadMore: document.querySelector('.load-more'),
-};
+import { refs } from './js/refs';
 
 let q = '';
 let pageCount = 1;
-const perPage = 40;
+let maxPage = 0;
 
-refs.loader.classList.replace('loader', 'is-hidden');
-refs.loadMore.classList.replace('load-more', 'is-hidden');
+hiddenLoader();
+hiddenLoadBtn();
 
 refs.form.addEventListener('submit', handleSubmit);
 refs.loadMore.addEventListener('click', handlOnClick);
 
 function handleSubmit(e) {
   e.preventDefault();
+
+  showLoadBtn();
+
   q = e.target.elements.searchQuery.value.trim().replace(' ', '+');
+
   if (q.trim() === '') {
-    Notify.failure('Please filling your search bar.');
+    alertError('Please filling your search bar.');
+    hiddenLoadBtn();
+    return;
   }
+
   let resp = fetchPics(q);
   resp.then(res_data => {
-    if (res_data.data.total === 0) {
-      console.log(res_data.data.total);
-      Notify.failure('No results for your query.');
+    if (res_data.data.totalHits === 0) {
+      alertError(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
     } else {
+      maxPage = Math.ceil(res_data.data.totalHits / 40);
+
       createGallery(res_data.data.hits);
-      refs.loadMore.classList.replace('is-hidden', 'load-more');
+
+      alertImgSuccess(res_data.data.totalHits);
     }
   });
+  showLoader();
   cleanForm();
+  clearGallery();
+}
+
+function clearGallery() {
+  refs.gallery.innerHTML = '';
 }
 
 function cleanForm() {
@@ -44,7 +61,12 @@ function cleanForm() {
 }
 
 function handlOnClick() {
-  pageCount += 1;
-  let myResponse = fetchPics(q, pageCount);
-  myResponse.then(res => createGallery(res.data.hits));
+  if (pageCount === maxPage) {
+    hiddenLoadBtn();
+    alertError("We're sorry, but you've reached the end of search results.");
+  } else {
+    pageCount += 1;
+    let myResponse = fetchPics(q, pageCount);
+    myResponse.then(res => createGallery(res.data.hits));
+  }
 }

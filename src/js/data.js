@@ -1,13 +1,12 @@
 import axios from 'axios';
 export { fetchPics };
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { showLoader, hiddenLoader } from './refs';
+import { alertError } from './utils';
 
 const URL = 'https://pixabay.com/api/';
 const API_KEY = '38926038-9764a0475e6c51ddc0f5eb34a';
 
-//key=${API_KEY}&q=${_q}s&image_type=photo`
-
-async function fetchPics(_q, p = 1) {
+async function fetchPics(_q, p = 1, per_p = 40) {
   try {
     const urlParams = {
       key: API_KEY,
@@ -16,17 +15,19 @@ async function fetchPics(_q, p = 1) {
       orientation: 'horizontal',
       safesearch: 'true',
       page: p,
+      per_page: per_p,
     };
+    showLoader();
 
     const data = await axios.get(URL, {
       params: urlParams,
     });
+    // while waiting - showing loader
+    hiddenLoader();
 
     return data;
   } catch (error) {
-    Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
+    alertError('Something went wrong, please try again.');
     return error;
   }
 }
