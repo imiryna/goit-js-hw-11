@@ -39,5 +39,4 @@ function createGallery(data) {
     captionsData: 'alt',
     captionDelay: 250,
   }).refresh();
-  // allertImgSuccess();
 }
