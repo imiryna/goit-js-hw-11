@@ -1,12 +1,6 @@
 import { fetchPics } from './js/data';
 import { alertError, alertImgSuccess } from './js/utils';
-import {
-  refs,
-  hiddenLoader,
-  showLoader,
-  hiddenLoadBtn,
-  showLoadBtn,
-} from './js/refs';
+import { refs, hiddenLoader, showLoader } from './js/refs';
 import { createGallery } from './js/create-gallery';
 import { refs } from './js/refs';
 
@@ -15,21 +9,19 @@ let pageCount = 1;
 let maxPage = 0;
 
 hiddenLoader();
-hiddenLoadBtn();
 
 refs.form.addEventListener('submit', handleSubmit);
-refs.loadMore.addEventListener('click', handlOnClick);
+// replaced with infinite scroll
+// refs.loadMore.addEventListener('click', handlOnClick);
 
 function handleSubmit(e) {
   e.preventDefault();
-
-  showLoadBtn();
+  pageCount = 1;
 
   q = e.target.elements.searchQuery.value.trim().replace(' ', '+');
 
   if (q.trim() === '') {
     alertError('Please filling your search bar.');
-    hiddenLoadBtn();
     return;
   }
 
@@ -60,21 +52,23 @@ function cleanForm() {
   refs.form.reset();
 }
 
-function handlOnClick() {
+function loadMoreGallery() {
   if (pageCount === maxPage) {
-    hiddenLoadBtn();
     alertError("We're sorry, but you've reached the end of search results.");
   } else {
     pageCount += 1;
     let myResponse = fetchPics(q, pageCount);
+    showLoader();
     myResponse.then(res => createGallery(res.data.hits));
   }
 }
-const { height: cardHeight } = document
-  .querySelector('.gallery')
-  .firstElementChild.getBoundingClientRect();
 
-window.scrollBy({
-  top: cardHeight * 2,
-  behavior: 'smooth',
-});
+const handleInfiniteScroll = () => {
+  const endOfPage =
+    window.innerHeight + window.scrollY >= document.body.offsetHeight;
+  if (endOfPage) {
+    loadMoreGallery();
+  }
+};
+
+window.addEventListener('scroll', handleInfiniteScroll);

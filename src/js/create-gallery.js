@@ -1,9 +1,14 @@
 export { createGallery };
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import { alertImgSuccess } from './data';
 
 const divGallery = document.querySelector('.gallery');
+let gallery = new SimpleLightbox('.gallery a', {
+  captionPosition: 'bottom',
+  captions: true,
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 function createGallery(data) {
   const imgs = data
@@ -33,10 +38,5 @@ function createGallery(data) {
     .join('');
   divGallery.insertAdjacentHTML('beforeend', imgs);
 
-  let gallery = new SimpleLightbox('.gallery a', {
-    captionPosition: 'bottom',
-    captions: true,
-    captionsData: 'alt',
-    captionDelay: 250,
-  }).refresh();
+  gallery.refresh();
 }
